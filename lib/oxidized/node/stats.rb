@@ -31,8 +31,8 @@ module Oxidized
 
       def initialize
         @stats = {}
-	      @stats[:success_count] = 0
-	      @stats[:failure_count] = 0
+        @stats[:success_count] = 0
+        @stats[:failure_count] = 0
       end
 
     end
