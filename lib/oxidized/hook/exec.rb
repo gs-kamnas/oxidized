@@ -28,10 +28,9 @@ class Exec < Oxidized::Hook
       @cmd = cfg.cmd
       raise "invalid cmd value" unless @cmd.is_a?(String) || @cmd.is_a?(Array)
     end
-
   rescue RuntimeError => e
     raise ArgumentError,
-      "#{self.class.name}: configuration invalid: #{e.message}"
+          "#{self.class.name}: configuration invalid: #{e.message}"
   end
 
   def run_hook ctx
