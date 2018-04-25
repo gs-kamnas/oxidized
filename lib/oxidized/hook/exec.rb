@@ -38,9 +38,9 @@ class Exec < Oxidized::Hook
     diffdata = nil
     log "Execute: #{@cmd.inspect}", :debug
     if @diff && ctx.node && ctx.event.to_s == "post_store"
-        gitoutput = ctx.node.output.new
-        diffraw = gitoutput.get_diff ctx.node, ctx.node.group, ctx.commitref, nil
-        diffdata = diffraw[:patch].lines.to_a[4..-1].join
+      gitoutput = ctx.node.output.new
+      diffraw = gitoutput.get_diff ctx.node, ctx.node.group, ctx.commitref, nil
+      diffdata = diffraw[:patch].lines.to_a[4..-1].join
     end
     th = Thread.new do
       begin
@@ -52,18 +52,18 @@ class Exec < Oxidized::Hook
     th.join unless @async
   end
 
-  def run_cmd! env , diffdata
+  def run_cmd! env, diffdata
     pid, status = nil, nil
     Timeout.timeout(@timeout) do
       if diffdata
-        IO.popen env, @cmd , "r+", :unsetenv_others => true do |phandle|
+        IO.popen env, @cmd, "r+", :unsetenv_others => true do |phandle|
           pid = phandle.pid
           phandle.puts diffdata
           phandle.close_write
           puts phandle.gets
         end
       else
-        pid = spawn env, @cmd , :unsetenv_others => true
+        pid = spawn env, @cmd, :unsetenv_others => true
       end
       pid, status = wait2 pid
       unless status.exitstatus.zero?
