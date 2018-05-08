@@ -74,7 +74,8 @@ module Oxidized
           # set last job to nil so that the node is picked for immediate update
           n.last = nil
           put n
-          jobs.want += 1 if Oxidized.config.next_adds_job?
+          # Caution: scheduler will enter infinite loop if jobs.want > nodes.size
+          jobs.want += 1 if Oxidized.config.next_adds_job? and jobs.want < self.size
         end
       end
     end
