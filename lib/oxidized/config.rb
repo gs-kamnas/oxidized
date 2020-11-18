@@ -59,7 +59,7 @@ module Oxidized
         raise InvalidConfig, "Error loading config: #{error.message}"
       end
 
-      raise NoConfig, 'edit ~/.config/oxidized/config' if asetus.create
+      raise NoConfig, "edit #{File.join(Oxidized::Config::Root, 'config')}" if asetus.create
 
       # override if comand line flag given
       asetus.cfg.debug = cmd_opts[:debug] if cmd_opts[:debug]
