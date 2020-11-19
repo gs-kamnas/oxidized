@@ -39,6 +39,7 @@ module Oxidized
       asetus.default.crash.hostnames = false
 
       asetus.default.stats.history_size = 10
+      asetus.default.stats.redis_url    = false
       asetus.default.input.default      = 'ssh, telnet'
       asetus.default.input.debug        = false # or String for session log file
       asetus.default.input.ssh.secure   = false # complain about changed certs
