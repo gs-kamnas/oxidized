@@ -49,7 +49,7 @@ module Oxidized
         if cmd_arg.class == Symbol
           process_args_block(@cmd[cmd_arg], args, block)
         else
-          process_args_block(@cmd[:cmd], args, [cmd_arg, block])
+          process_args_block(@cmd[:cmd], args, [cmd_arg, args, block])
         end
         Oxidized.logger.debug "lib/oxidized/model/model.rb Added #{cmd_arg} to the commands list"
       end
@@ -107,9 +107,13 @@ module Oxidized
 
     attr_accessor :input, :node
 
-    def cmd(string, &block)
+    def cmd(string, args, &block)
       Oxidized.logger.debug "lib/oxidized/model/model.rb Executing #{string}"
-      out = @input.cmd(string)
+      if args[:expect]
+        out = @input.cmd(string, expect = args[:expect])
+      else
+        out = @input.cmd(string)
+      end
       return false unless out
 
       out = out.b unless Oxidized.config.input.utf8_encoded?
@@ -158,8 +162,8 @@ module Oxidized
       Oxidized.logger.debug 'lib/oxidized/model/model.rb Collecting commands\' outputs'
       outputs = Outputs.new
       procs = self.class.procs
-      self.class.cmds[:cmd].each do |command, block|
-        out = cmd command, &block
+      self.class.cmds[:cmd].each do |command, args, block|
+        out = cmd command, args, &block
         return false unless out
 
         outputs << out

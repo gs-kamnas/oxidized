@@ -23,7 +23,7 @@ class EOS < Oxidized::Model
     comment cfg
   end
 
-  cmd 'show running-config | no-more | exclude ! Time:' do |cfg|
+  cmd('show running-config | no-more | exclude ! Time:', expect: /[\r\n]+end[\r\n]+.+[#>]\s?$/) do |cfg|
     cfg
   end
 
