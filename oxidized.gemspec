@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mocha',    '~> 1.1'
   s.add_development_dependency 'mock_redis', '~> 0.21'
   s.add_development_dependency 'pry',      '~> 0'
-  s.add_development_dependency 'rake', '~> 10.0'
+  s.add_development_dependency 'rake', '>= 12.3.3'
   s.add_development_dependency 'rubocop', '~> 0.81.0'
   s.add_development_dependency 'simplecov'
 end
