@@ -107,7 +107,7 @@ module Oxidized
 
     attr_accessor :input, :node
 
-    def cmd(string, args, &block)
+    def cmd(string, args = {}, &block)
       Oxidized.logger.debug "lib/oxidized/model/model.rb Executing #{string}"
       if args[:expect]
         out = @input.cmd(string, expect = args[:expect])
