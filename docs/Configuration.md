@@ -347,6 +347,29 @@ Names can instead be passed verbatim to the input:
 resolve_dns: false
 ```
 
+
+## Statistics
+
+The `stats:` config section can be used to customize the storage mechanism and amount of per-device statistics maintained by Oxidized. By default, the stats gathered during the last 10 polling attempts are maintained in memory (no persistence) for each device.
+
+Statistics can optionally be stored in [Redis](https://redis.io/) to allow for persistence and better scalability. The [redis-rb](https://github.com/redis/redis-rb) gem must also be installed in order to enable this feature.
+
+```yaml
+stats:
+  # How many detailed stats should be stored per device?
+  # This is used when computing items such as the success/failure rate. Defaults to 10.
+  history_size: 10
+
+  # Enable statistics storage in Redis by specifiying a redis:// URL here
+  # Set to false to use the standalone in-memory implementation.
+  redis_url: 'redis://user:pass@127.0.0.1:6379/16
+
+  # Optionally define how many reconnection attempts will be made to Redis before giving up.
+  # Default is 10 attempts
+  redis_reconnect_attempts: 10
+```
+
+
 ## Environment variables
 
 You can use some environment variables to change default root directories values.

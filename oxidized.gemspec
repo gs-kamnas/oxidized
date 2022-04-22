@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'git',                 '~> 1'
   s.add_development_dependency 'minitest',            '~> 5.18'
   s.add_development_dependency 'mocha',               '~> 2.1'
+  s.add_development_dependency 'mock_redis',          '~> 0.26'
   s.add_development_dependency 'pry',                 '~> 0.14.2'
   s.add_development_dependency 'rake',                '~> 13.0'
   s.add_development_dependency 'rubocop',             '~> 1.60.0'

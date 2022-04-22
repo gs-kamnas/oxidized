@@ -14,6 +14,16 @@ describe Oxidized::Node do
                                username: 'alma',
                                password: 'armud',
                                prompt:   'test_prompt')
+
+    # Similar node but with redis stats recording
+    Oxidized.config.stats.redis_url = "mock"
+    @redis_node = Oxidized::Node.new(name:     'redis.example.com',
+                                     input:    'ssh',
+                                     output:   'git',
+                                     model:    'junos',
+                                     username: 'alma',
+                                     password: 'armud',
+                                     prompt:   'test_prompt')
   end
 
   describe '#new' do
@@ -32,17 +42,23 @@ describe Oxidized::Node do
     it 'should require prompt' do
       _(@node.prompt).must_equal 'test_prompt'
     end
+    it 'should resolve local stats storage means' do
+      @node.stats.class.must_equal Oxidized::Node::LocalStats
+    end
+    it 'should resolve redis stats storage means' do
+      @redis_node.stats.class.must_equal Oxidized::Node::RedisStats
+    end
   end
 
   describe '#run' do
     it 'should fetch the configuration' do
-      stub_oxidized_ssh
+      stub_oxidized_ssh @node
 
       status, = @node.run
       _(status).must_equal :success
     end
-    it 'should record the success' do
-      stub_oxidized_ssh
+    it 'should record the success locally' do
+      stub_oxidized_ssh @node
 
       before_successes = @node.stats.successes
       j = Oxidized::Job.new @node
@@ -52,8 +68,8 @@ describe Oxidized::Node do
       successes = after_successes - before_successes
       _(successes).must_equal 1
     end
-    it 'should record a failure' do
-      stub_oxidized_ssh_fail
+    it 'should record a failure locally' do
+      stub_oxidized_ssh_fail @node
 
       before_fails = @node.stats.failures
       j = Oxidized::Job.new @node
@@ -62,6 +78,28 @@ describe Oxidized::Node do
       after_fails = @node.stats.failures
       fails = after_fails - before_fails
       _(fails).must_equal 1
+    end
+    it 'should record the success to redis' do
+      stub_oxidized_ssh @redis_node
+
+      before_successes = @redis_node.stats.successes
+      j = Oxidized::Job.new @redis_node
+      j.join
+      @redis_node.stats.add j
+      after_successes = @redis_node.stats.successes
+      successes = after_successes - before_successes
+      successes.must_equal 1
+    end
+    it 'should record a failure to redis' do
+      stub_oxidized_ssh_fail @redis_node
+
+      before_fails = @redis_node.stats.failures
+      j = Oxidized::Job.new @redis_node
+      j.join
+      @redis_node.stats.add j
+      after_fails = @redis_node.stats.failures
+      fails = after_fails - before_fails
+      fails.must_equal 1
     end
   end
 
