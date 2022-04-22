@@ -1,10 +1,10 @@
 module Oxidized
+  require_relative 'stats'
   class Node
-    class RedisStats
+    class RedisStats < NodeStats
       attr_reader :mtimes
       MAX_STAT = 10
       RECONNECT_ATTEMPTS = 10
-      ALL_STATUSES = %i[success failure no_connection].freeze
 
       # @param [Job] job job whose information add to stats
       # @return [void]
