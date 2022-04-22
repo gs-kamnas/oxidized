@@ -1,6 +1,7 @@
 module Oxidized
+  require_relative 'stats'
   class Node
-    class LocalStats
+    class LocalStats < NodeStats
       attr_reader :mtimes
 
       MAX_STAT = 10
