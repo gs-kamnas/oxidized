@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- add ability to store stats in redis for persistence (@gs-kamnas)
 - Extend http source configurations to include read_timeout value
 - enterasys800 model for enterasys 800-series fe/ge switches (@javichumellamo)
 - add ES3526XA-V2 support in EdgeCOS model (@moisseev)

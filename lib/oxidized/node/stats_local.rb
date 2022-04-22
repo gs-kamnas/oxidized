@@ -1,6 +1,6 @@
 module Oxidized
   class Node
-    class Stats
+    class LocalStats
       attr_reader :mtimes
       MAX_STAT = 10
 
