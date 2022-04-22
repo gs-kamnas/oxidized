@@ -1,7 +1,8 @@
 module Oxidized
   require 'resolv'
   require 'ostruct'
-  require_relative 'node/stats'
+  require_relative 'node/stats_local'
+  require_relative 'node/stats_redis'
   class MethodNotFound < OxidizedError; end
   class ModelNotFound  < OxidizedError; end
   class Node
@@ -25,7 +26,7 @@ module Oxidized
       @auth = resolve_auth opt
       @prompt = resolve_prompt opt
       @vars = opt[:vars]
-      @stats = Stats.new
+      @stats = resolve_stats opt
       @retry = 0
       @repo = resolve_repo opt
       @err_type = nil
@@ -145,6 +146,13 @@ module Oxidized
 
     def resolve_prompt(opt)
       opt[:prompt] || @model.prompt || Oxidized.config.prompt
+    end
+
+    def resolve_stats(opt)
+      return LocalStats.new unless Oxidized.config.stats.redis_url.respond_to?(:to_str)
+
+      Oxidized.logger.debug("Using redis state storage for node #{opt[:name]}")
+      RedisStats.new opt
     end
 
     def resolve_auth(opt)
