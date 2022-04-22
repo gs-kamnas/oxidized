@@ -64,6 +64,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - fixed an issue where EOS config was truncated. Fixes #2038 (@jake2184 @fhibler)
 - fixed missing output from routeros version command (@mjbnz)
 - Updated fastiron enable password prompt regex (@pepperoni-pi)
+- Oxidized will now exit on SIGTERM and SIGINT; SIGHUP will trigger a node list reload and reopen logs (@gs-kamnas)
+- fixed an issue where OXIDIZED\_HOME did not appropriately set the main user config file location (@gs-kamnas)
 
 ## [0.28.0 - 2020-05-18]
 
