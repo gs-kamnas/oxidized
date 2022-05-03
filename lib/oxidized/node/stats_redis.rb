@@ -18,10 +18,10 @@ module Oxidized
         # Write the new stat and purge old stats atomically
         stat_keyname = "#{@stat_prefix}.#{job.status}"
         counter_keyname = "#{@counter_prefix}.#{job.status}"
-        @redis.multi do
-          @redis.rpush(stat_keyname, stat.to_json)
-          @redis.ltrim(stat_keyname, (-1*@history_size), -1)
-          @redis.incr(counter_keyname)
+        @redis.multi do |pipeline|
+          pipeline.rpush(stat_keyname, stat.to_json)
+          pipeline.ltrim(stat_keyname, (-1*@history_size), -1)
+          pipeline.incr(counter_keyname)
         end
       end
 
@@ -58,9 +58,9 @@ module Oxidized
       end
 
       def update_mtime
-        @redis.multi do
-          @redis.lpush(@mtime_prefix, Time.now.utc)
-          @redis.ltrim(@mtime_prefix, 0, (@history_size - 1))
+        @redis.multi do |pipeline|
+          pipeline.lpush(@mtime_prefix, Time.now.utc)
+          pipeline.ltrim(@mtime_prefix, 0, (@history_size - 1))
         end
       end
 
