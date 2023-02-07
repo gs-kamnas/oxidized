@@ -1,5 +1,18 @@
+require 'asetus'
+class Asetus
+  class Adapter
+    class YAML
+      class << self
+        def from yaml
+          require 'yaml'
+          ::YAML.load(yaml, permitted_classes: [Regexp])
+        end
+      end
+    end
+  end
+end
+
 module Oxidized
-  require 'asetus'
   class NoConfig < OxidizedError; end
   class InvalidConfig < OxidizedError; end
   class Config
