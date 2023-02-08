@@ -1,6 +1,4 @@
-class NXOS < Oxidized::Model
-  using Refinements
-
+class NXOS6 < Oxidized::Model
   prompt /^(\r?[\w.@_()-]+[#]\s?)$/
   comment '! '
 
@@ -20,22 +18,11 @@ class NXOS < Oxidized::Model
 
   cmd 'show version' do |cfg|
     cfg = filter cfg
-    keep = 1
-    cfg = cfg.each_line.map do |line|
-      # Discard all text between the 1st line describing uptime (inclusive)
-      # and the listing of the installed packages (exclusive)
-      if line.match(/uptime/i)
-        keep = nil
-      elsif line.match(/active package/i)
-        keep = 1
-        line = "\n"+line
-      end
-      line if keep
-    end
+    cfg = cfg.each_line.take_while { |line| not line.match(/uptime/i) }
     comment cfg.join
   end
 
-  cmd 'show inventory all' do |cfg|
+  cmd 'show inventory' do |cfg|
     cfg = filter cfg
     comment cfg
   end
