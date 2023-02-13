@@ -5,7 +5,7 @@ class Asetus
       class << self
         def from yaml
           require 'yaml'
-          ::YAML.load(yaml, permitted_classes: [Regexp])
+          ::YAML.safe_load(yaml, permitted_classes: [Regexp])
         end
       end
     end
