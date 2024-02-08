@@ -1,5 +1,9 @@
 require_relative '../spec_helper'
 require 'oxidized/input/ssh'
+require 'resolv'
+
+# Can return IPv6 localhost
+LOCALHOST4_IP = Resolv.getaddress('localhost')
 
 describe Oxidized::SSH do
   before(:each) do
@@ -15,7 +19,7 @@ describe Oxidized::SSH do
   describe "#connect" do
     it "should use proxy command when proxy host given and connect by ip if resolve_dns is true" do
       Oxidized.config.resolve_dns = true
-      @node = Oxidized::Node.new(name:     'localhost4.localdomain4',
+      @node = Oxidized::Node.new(name:     'localhost',
                                  input:    'ssh',
                                  output:   'git',
                                  model:    'junos',
@@ -31,7 +35,7 @@ describe Oxidized::SSH do
 
       proxy = mock
       Net::SSH::Proxy::Command.expects(:new).with("ssh test.com -W [%h]:%p").returns(proxy)
-      Net::SSH.expects(:start).with('127.0.0.1', 'alma',      port:                            22,
+      Net::SSH.expects(:start).with(LOCALHOST4_IP, 'alma',      port:                            22,
                                                               verify_host_key:                 Oxidized.config.input.ssh.secure ? :always : :never,
                                                               append_all_supported_algorithms: true,
                                                               keepalive:                       true,
@@ -48,7 +52,7 @@ describe Oxidized::SSH do
 
     it "should use proxy command when proxy host given and connect by name if resolve_dns is false" do
       Oxidized.config.resolve_dns = false
-      @node = Oxidized::Node.new(name:     'localhost4.localdomain4',
+      @node = Oxidized::Node.new(name:     'localhost',
                                  input:    'ssh',
                                  output:   'git',
                                  model:    'junos',
@@ -64,7 +68,7 @@ describe Oxidized::SSH do
 
       proxy = mock
       Net::SSH::Proxy::Command.expects(:new).with("ssh test.com -W [%h]:%p").returns(proxy)
-      Net::SSH.expects(:start).with('localhost4.localdomain4', 'alma',
+      Net::SSH.expects(:start).with('localhost', 'alma',
                                                             port:                            22,
                                                             verify_host_key:                 Oxidized.config.input.ssh.secure ? :always : :never,
                                                             append_all_supported_algorithms: true,
