@@ -75,7 +75,7 @@ task :chmod do
     extra/update-ca-certificates.runit
   ]
   dirs = []
-  %x(git ls-files -z).split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }.each do |file|
+  %x(git ls-files -z).split("\x0").reject { |f| f.match(%r{^(test|spec|features|.devcontainer|.github|Dockerfile)/}) }.each do |file|
     dirs.push(File.dirname(file))
     xbit.include?(file) ? File.chmod(0o0755, file) : File.chmod(0o0644, file)
   end
