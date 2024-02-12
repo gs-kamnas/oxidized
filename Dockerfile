@@ -8,10 +8,10 @@ RUN apt-get -yq update \
     && rm -rf /var/lib/apt/lists/*
 
 # dependencies for hooks
-RUN gem install --no-document aws-sdk slack-ruby-client xmpp4r cisco_spark
+RUN gem install --no-document aws-sdk-sns slack-ruby-client xmpp4r cisco_spark
 
 # dependencies for sources
-RUN gem install --no-document gpgme sequel sqlite3 mysql2 pg
+RUN gem install --no-document gpgme sequel sqlite3 mysql2 pg redis
 
 # dependencies for inputs
 RUN gem install --no-document net-tftp net-http-persistent mechanize
@@ -27,7 +27,16 @@ RUN git fetch --unshallow || true
 RUN CMAKE_FLAGS='-DUSE_SSH=ON' rake install
 
 # web interface
-RUN gem install oxidized-web --no-document
+
+# Upstream
+# RUN gem install oxidized-web --no-document
+
+# Custom
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get -yq install nodejs
+RUN git clone --depth=1 --branch yarn-dep-management https://github.com/gs-kamnas/oxidized-web && \
+    cd oxidized-web && \
+    corepack enable && \
+    rake install
 
 # clean up
 WORKDIR /
